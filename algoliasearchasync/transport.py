@@ -110,7 +110,6 @@ class Transport:
             finally:
                 if old_timeout is not None:
                     yield from self.set_conn_timeout(old_timeout)
-        newrelic.agent.record_exception()
         raise AlgoliaException('Unreachable hosts: %s', exceptions)
 
     @asyncio.coroutine

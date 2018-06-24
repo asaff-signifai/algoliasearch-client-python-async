@@ -99,18 +99,18 @@ class Transport:
                 coro = self._req(host, path, meth, timeout, params, data, is_search)
                 return (yield from coro)
             except AlgoliaException as e:
+                newrelic.agent.record_exception()
                 raise e
             # TODO: Handle task canceling.
             except Exception as e:
+                newrelic.agent.record_exception()
                 self._rotate_hosts(is_search)
                 self._dns_timer = time.time()
-                newrelic.agent.record_exception()
-                
                 exceptions[host] = '%s: %s' % (e.__class__.__name__, str(e))
             finally:
                 if old_timeout is not None:
                     yield from self.set_conn_timeout(old_timeout)
-
+        newrelic.agent.record_exception()
         raise AlgoliaException('Unreachable hosts: %s', exceptions)
 
     @asyncio.coroutine

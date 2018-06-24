@@ -87,6 +87,7 @@ class Transport:
         hosts = self._get_hosts(is_search)
         timeout = self.search_timeout if is_search else self.timeout
 
+
         exceptions = {}
         for i, host in enumerate(hosts):
             old_timeout = None

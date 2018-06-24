@@ -8,6 +8,9 @@ import async_timeout
 from algoliasearch.helpers import AlgoliaException, CustomJSONEncoder, urlify, rotate
 
 
+import newrelic.agent
+
+
 DNS_TIMER_DELAY = 5 * 60  # 5 minutes
 
 
@@ -101,6 +104,7 @@ class Transport:
             except Exception as e:
                 self._rotate_hosts(is_search)
                 self._dns_timer = time.time()
+                newrelic.agent.record_exception()
                 exceptions[host] = '%s: %s' % (e.__class__.__name__, str(e))
             finally:
                 if old_timeout is not None:
